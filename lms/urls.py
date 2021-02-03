@@ -38,7 +38,7 @@ from lms.views.course.course_registration_views import (
 from lms.views.course.course_views import (
     CourseListView,
     GradeBookCourseView,
-    StudentGradeBookCourseView, CourseCreateView
+    StudentGradeBookCourseView
     # table_download
 )
 from lms.views.course.grading_scheme_view import (
@@ -79,7 +79,10 @@ from lms.views.quiz.quiz_views import (
     preview_quiz,
     enter_quiz_comment,
     quiz_publish, QuizCreateView, QuizUpdateView, QuizDeleteView,
-    QuizQuestionCreateView, QuizQuestionUpdateView, QuizQuestionDeleteView
+    QuizQuestionCreateView, QuizQuestionUpdateView, QuizQuestionDeleteView,
+    quiz_instructions,
+    quizzes,
+    studentQuiz
 )
 
 # Specifies the app name for name spacing.
@@ -219,11 +222,6 @@ urlpatterns = [
         name="course_unpublish"
     ),
 
-    path(
-        route="course/create/",
-        view=CourseCreateView.as_view(),
-        name="course_create"
-    ),
     # /author/notification/
     path(
         route="notifications/",
@@ -305,8 +303,7 @@ urlpatterns = [
     # By Quiz Teacher View Team.[Start]
     path('course/<int:course_id>/quiz/course_stats/', compute_stats, name="compute_stats"),
 
-    path('course/<int:course_id>/quiz/<int:pk>/one_at_a_time/', fetch_questions_one_at_a_time,
-         name="fetch_questions_one_at_a_time"),
+    path('course/<int:course_id>/quiz/<int:pk>/one_at_a_time/', fetch_questions_one_at_a_time, name="fetch_questions_one_at_a_time"),
 
     path('course/<int:course_id>/quiz/<int:pk>/fetch_questions/', fetch_questions, name="fetch_questions"),
 
@@ -316,12 +313,9 @@ urlpatterns = [
     path('course/<int:course_id>/quiz/<int:pk>/update/', QuizUpdateView.as_view(), name="quiz_update"),
     path('course/<int:course_id>/quiz/<int:pk>/delete/', QuizDeleteView.as_view(), name="quiz_delete"),
 
-    path('course/<int:course_id>/quiz/<int:quiz_id>/question/create', QuizQuestionCreateView.as_view(),
-         name="quiz_question_create"),
-    path('course/<int:course_id>/quiz/<int:quiz_id>/question/<int:pk>/update/', QuizQuestionUpdateView.as_view(),
-         name="quiz_question_update"),
-    path('course/<int:course_id>/quiz/<int:quiz_id>/question/<int:pk>/delete/', QuizQuestionDeleteView.as_view(),
-         name="quiz_question_delete"),
+    path('course/<int:course_id>/quiz/<int:quiz_id>/question/create', QuizQuestionCreateView.as_view(), name="quiz_question_create"),
+    path('course/<int:course_id>/quiz/<int:quiz_id>/question/<int:pk>/update/', QuizQuestionUpdateView.as_view(), name="quiz_question_update"),
+    path('course/<int:course_id>/quiz/<int:quiz_id>/question/<int:pk>/delete/', QuizQuestionDeleteView.as_view(), name="quiz_question_delete"),
 
     path('course/<int:course_id>/quiz/<int:pk>/detail/', quiz_detail, name="quiz_view"),
 
@@ -331,6 +325,13 @@ urlpatterns = [
 
     path('course/<int:course_id>/quiz/<int:pk>/publish/', quiz_publish, name='quiz_publish'),
     # By Quiz Teacher View Team.[End]
+
+    # By Quiz Student Team - START
+    path('course/<int:course_id>/quiz/quizzes/', quizzes, name='quizzes'),
+    path('course/<int:course_id>/quiz/quiz_instructions/', quiz_instructions, name='quiz_instructions'),
+    path('course/<int:course_id>/quiz/studentQuiz/', studentQuiz, name='studentQuiz'),
+
+    # By Quiz Student Team - END
 
     # Assignment Views
     path(

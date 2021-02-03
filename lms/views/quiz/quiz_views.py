@@ -28,6 +28,71 @@ def fetch_questions(request, *args, **kwargs):
     return render(request, 'quiz/fetch_questions.html', context)
 
 
+# Fetch Quiz instructions for student
+def quiz_instructions(request, *args, **kwargs):
+    quiz_pk_id = ''
+    quiz_name = ''
+    print("query string....",request.GET['Quiz'],request.GET['QuizName'])
+
+    if request.GET['Quiz'] is not None:
+        quiz_pk_id = str(request.GET['Quiz'])
+
+    if request.GET['QuizName'] is not None:
+        quiz_name = str(request.GET['QuizName'])
+
+    #questions = Question.objects.filter(quiz__id=kwargs['pk'])
+    quizs = Quiz.objects.filter(course_id = kwargs['course_id'])
+    print("inst...",quizs)
+    context = {'course_id': kwargs['course_id'],
+               'object': Course.objects.get(id=kwargs['course_id']),
+               #'pk': kwargs['pk'],
+               #'questions': questions,
+               'quizid': str(quiz_pk_id),
+               'quizname':str(quiz_name)
+               }
+    return render(request, 'quiz/quiz_instructions.html', context)
+
+# Fetch Quiz instructions for student
+def quizzes(request, *args, **kwargs):
+    quizs = Quiz.objects.filter(course_id = kwargs['course_id'])
+    print("here...",quizs)
+    context = {'course_id': kwargs['course_id'],
+               'object':Course.objects.get(id=kwargs['course_id']),
+               #'pk': kwargs['pk'],
+               #'questions': questions,
+               'quizs': quizs
+               }
+    print("quizzes",context)
+    return render(request, 'quiz/QuizAll.html', context)
+
+
+# Fetch Quiz instructions for student
+def studentQuiz(request, *args, **kwargs):
+    # quizs = Quiz.objects.filter(course_id = kwargs['course_id'])
+    # context = {'course_id': kwargs['course_id'],
+    #            'object':Course.objects.get(id=kwargs['course_id']),
+    #            #'pk': kwargs['pk'],
+    #            #'questions': questions,
+    #            'quizs': quizs
+    #            }
+
+
+    quiz_pk_id = ''
+    if request.GET['Quiz'] is not None:
+        quiz_pk_id = str(request.GET['Quiz'])
+        print("in student quiz page...",quiz_pk_id)
+
+    #quiz_id = Quiz.objects.all(course_id=kwargs['course_id'],Quizname = quizname)
+    #print("quiz id...student quiz details",quiz_pk_id)
+    questions = Question.objects.filter(quiz__id=quiz_pk_id)
+    context = {'questions': questions,
+               'course_id': kwargs['course_id'],
+               'quiz': Quiz.objects.get(id=quiz_pk_id),
+               'object': Course.objects.get(id=kwargs['course_id'])}
+    #print("quizzes",context)
+    return render(request, 'quiz/studentQuiz.html', context)
+
+
 # Fetch one quiz question at a time.
 def fetch_questions_one_at_a_time(request, *args, **kwargs):
     obj = Question.objects.filter(quiz__id=kwargs['pk'])
